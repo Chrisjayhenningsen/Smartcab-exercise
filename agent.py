@@ -6,13 +6,27 @@ from simulator import Simulator
 class LearningAgent(Agent):
     """An agent that learns to drive in the smartcab world."""
 
-    valid_actions = [None, 'forward', 'left', 'right']
+    valid_directions = [None, 'forward', 'left', 'right']
+    lights = ['green','red']
+    traffic = ['none','other_heading']
+    
 
     def __init__(self, env):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
         self.color = 'red'  # override color
         self.planner = RoutePlanner(self.env, self)  # simple route planner to get next_waypoint
         # TODO: Initialize any additional variables here
+        valid_directns = ['None', 'forward', 'left', 'right']
+        lts = ['green','red']
+        traffc = ['none','other_heading']
+        Qlist={}
+        for actn in valid_directns:
+            for waypt in valid_directns:
+                for colr in lts:
+                    for lft in traffc:
+                        for oncing in traffc:
+                            for rt in traffc:
+                                Qlist[actn,waypt,colr,lft,oncing,rt]=random.random()-0.2
 
     def reset(self, destination=None):
         self.planner.route_to(destination)
@@ -29,13 +43,11 @@ class LearningAgent(Agent):
         
         # TODO: Select action according to your policy
         # with thanks to studywolf
-        Q={}
- #       for combination in [state,action]:
-  #          Q[combination] = self.env.act(self, state, self.action)
-   #     maxQ = max(Q)
-    #    action = self.actions[maxQ]
+
+        #maxQ = max(Q)
+        #action = self.actions[maxQ]
         #return action
-        action = random.choice(self.valid_actions)
+        action = random.choice(self.valid_directions)
 
         # Execute action and get reward        
         reward = self.env.act(self, action)
