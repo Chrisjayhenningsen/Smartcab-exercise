@@ -28,11 +28,17 @@ class LearningAgent(Agent):
         self.state = self.next_waypoint, inputs
         
         # TODO: Select action according to your policy
-        
+        # with thanks to studywolf
+        Q={}
+        for combination in [state,action]:
+            Q[combination] = self.env.act(self, state, self.action)
+        maxQ = max(Q)
+        action = self.actions[maxQ]
+        #return action
+        #action = random.choice(self.valid_actions)
 
-        # Execute action and get reward
-        action = random.choice(self.valid_actions)
-        reward = self.env.act(self, action)
+        # Execute action and get reward        
+        reward = self.env.act(self, agent, action)
 
         # TODO: Learn policy based on state, action, reward
 
