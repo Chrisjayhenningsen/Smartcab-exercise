@@ -25,12 +25,14 @@ class LearningAgent(Agent):
                         for oncing in valid_directns:
                             for rt in valid_directns:
                                 Qlist[actn,''.join([waypt,colr,lft,oncing,rt])]=random.random()-0.2
-        print Qlist
+
     def reset(self, destination=None):
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
 
     def update(self, t):
+        directions = [None, 'forward', 'left', 'right']
+        
         def nunstring(entry):
             if entry == None:
                 return 'None'
@@ -45,19 +47,18 @@ class LearningAgent(Agent):
         self.state = (self.next_waypoint, inputs)
         
         # TODO: Select action according to your policy
-        # with thanks to studywolf
-        #q = [self.getQ(state, a) for a in self.actions]
-        #maxQ = max(q)
-        #action = self.actions[maxQ]
-        #return action
-        
-        #action = 
-        #maxQ = max(Q)
-        #action = self.actions[maxQ]
-        #return action
-        action = random.choice(self.valid_directions)
+        keptact = None
+        bestreward = 0
         global Qlist
-        print Qlist.get((nunstring(action), inputstring))
+        #print Qlist.get((nunstring(action), inputstring))
+        for a in directions:
+            if Qlist.get((nunstring(a), inputstring))>bestreward:
+                bestreward = Qlist.get((nunstring(a), inputstring))
+                keptact = a
+            print keptact
+            print bestreward
+        action = keptact
+        
 
         # Execute action and get reward        
         reward = self.env.act(self, action)
