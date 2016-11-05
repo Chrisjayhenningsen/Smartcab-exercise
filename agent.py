@@ -9,8 +9,8 @@ class LearningAgent(Agent):
     valid_directions = [None, 'forward', 'left', 'right']
     lights = ['green','red']
     traffic = ['none','other_heading']
-    
-
+    print traffic 
+    Qlist={}
     def __init__(self, env):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
         self.color = 'red'  # override color
@@ -19,6 +19,7 @@ class LearningAgent(Agent):
         valid_directns = ['None', 'forward', 'left', 'right']
         lts = ['green','red']
         traffc = ['none','other_heading']
+        global Qlist 
         Qlist={}
         for actn in valid_directns:
             for waypt in valid_directns:
@@ -26,8 +27,8 @@ class LearningAgent(Agent):
                     for lft in traffc:
                         for oncing in traffc:
                             for rt in traffc:
-                                Qlist[actn,waypt,colr,lft,oncing,rt]=random.random()-0.2
-
+                                Qlist[actn,''.join([waypt,colr,lft,oncing,rt])]=random.random()-0.2
+        print Qlist
     def reset(self, destination=None):
         self.planner.route_to(destination)
         # TODO: Prepare for a new trip; reset any variables here, if required
@@ -39,11 +40,16 @@ class LearningAgent(Agent):
         deadline = self.env.get_deadline(self)
 
         # TODO: Update state
-        self.state = self.next_waypoint, inputs
+        self.state = (self.next_waypoint, inputs)
         
         # TODO: Select action according to your policy
         # with thanks to studywolf
-
+        #q = [self.getQ(state, a) for a in self.actions]
+        #maxQ = max(q)
+        #action = self.actions[maxQ]
+        #return action
+        #print random.choice(self.Qlist)
+        #action = 
         #maxQ = max(Q)
         #action = self.actions[maxQ]
         #return action
