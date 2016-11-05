@@ -8,7 +8,7 @@ class LearningAgent(Agent):
 
     valid_directions = [None, 'forward', 'left', 'right']
     lights = ['green','red']
-    traffic = ['none','other_heading']
+    traffic = ['None','other_heading']
     print traffic 
     Qlist={}
     def __init__(self, env):
@@ -18,7 +18,7 @@ class LearningAgent(Agent):
         # TODO: Initialize any additional variables here
         valid_directns = ['None', 'forward', 'left', 'right']
         lts = ['green','red']
-        traffc = ['none','other_heading']
+        traffc = ['None','other_heading']
         global Qlist 
         Qlist={}
         for actn in valid_directns:
@@ -34,6 +34,10 @@ class LearningAgent(Agent):
         # TODO: Prepare for a new trip; reset any variables here, if required
 
     def update(self, t):
+        def nunstring(entry):
+            if entry == None:
+                return 'None'
+            return entry
         # Gather inputs
         self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
         inputs = self.env.sense(self)
@@ -48,12 +52,13 @@ class LearningAgent(Agent):
         #maxQ = max(q)
         #action = self.actions[maxQ]
         #return action
-        #print random.choice(self.Qlist)
+        
         #action = 
         #maxQ = max(Q)
         #action = self.actions[maxQ]
         #return action
         action = random.choice(self.valid_directions)
+        print nunstring(action)
 
         # Execute action and get reward        
         reward = self.env.act(self, action)
