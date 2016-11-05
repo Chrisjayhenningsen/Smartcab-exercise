@@ -8,8 +8,6 @@ class LearningAgent(Agent):
 
     valid_directions = [None, 'forward', 'left', 'right']
     lights = ['green','red']
-    traffic = ['None','other_heading']
-    print traffic 
     Qlist={}
     def __init__(self, env):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
@@ -18,15 +16,14 @@ class LearningAgent(Agent):
         # TODO: Initialize any additional variables here
         valid_directns = ['None', 'forward', 'left', 'right']
         lts = ['green','red']
-        traffc = ['None','other_heading']
         global Qlist 
         Qlist={}
         for actn in valid_directns:
             for waypt in valid_directns:
                 for colr in lts:
-                    for lft in traffc:
-                        for oncing in traffc:
-                            for rt in traffc:
+                    for lft in valid_directns:
+                        for oncing in valid_directns:
+                            for rt in valid_directns:
                                 Qlist[actn,''.join([waypt,colr,lft,oncing,rt])]=random.random()-0.2
         print Qlist
     def reset(self, destination=None):
@@ -41,6 +38,7 @@ class LearningAgent(Agent):
         # Gather inputs
         self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
         inputs = self.env.sense(self)
+        inputstring =''.join([nunstring(self.next_waypoint),nunstring(inputs.get('light')),nunstring(inputs.get('left')),nunstring(inputs.get('oncoming')),nunstring(inputs.get('right'))])
         deadline = self.env.get_deadline(self)
 
         # TODO: Update state
@@ -58,7 +56,8 @@ class LearningAgent(Agent):
         #action = self.actions[maxQ]
         #return action
         action = random.choice(self.valid_directions)
-        print nunstring(action)
+        global Qlist
+        print Qlist.get((nunstring(action), inputstring))
 
         # Execute action and get reward        
         reward = self.env.act(self, action)
