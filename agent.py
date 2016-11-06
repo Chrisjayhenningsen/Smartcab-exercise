@@ -9,6 +9,7 @@ class LearningAgent(Agent):
     valid_directions = [None, 'forward', 'left', 'right']
     lights = ['green','red']
     Qlist={}
+    rememberedstate = ()
     def __init__(self, env):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
         self.color = 'red'  # override color
@@ -31,12 +32,12 @@ class LearningAgent(Agent):
         # TODO: Prepare for a new trip; reset any variables here, if required
 
     def update(self, t):
-        directions = [None, 'forward', 'left', 'right']
-        
+        directions = [None, 'forward', 'left', 'right']        
         def nunstring(entry):
             if entry == None:
                 return 'None'
             return entry
+        
         # Gather inputs
         self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
         inputs = self.env.sense(self)
@@ -55,13 +56,16 @@ class LearningAgent(Agent):
             if Qlist.get((nunstring(a), inputstring))>bestreward:
                 bestreward = Qlist.get((nunstring(a), inputstring))
                 keptact = a
-            print keptact
-            print bestreward
+        global rememberedstate
+        rememberedstate = (nunstring(keptact), inputstring)
         action = keptact
-        
+        print rememberedstate
 
         # Execute action and get reward        
+        #print ''.join([nunstring(self.next_waypoint),nunstring(inputs.get('light')),nunstring(inputs.get('left')),nunstring(inputs.get('oncoming')),nunstring(inputs.get('right'))])
         reward = self.env.act(self, action)
+        #print ''.join([nunstring(self.next_waypoint),nunstring(inputs.get('light')),nunstring(inputs.get('left')),nunstring(inputs.get('oncoming')),nunstring(inputs.get('right'))])
+        
 
         # TODO: Learn policy based on state, action, reward
 
