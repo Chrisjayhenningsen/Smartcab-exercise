@@ -9,7 +9,6 @@ class LearningAgent(Agent):
     valid_directions = [None, 'forward', 'left', 'right']
     lights = ['green','red']
     Qlist={}
-    rememberedstate = ()
     def __init__(self, env):
         super(LearningAgent, self).__init__(env)  # sets self.env = env, state = None, next_waypoint = None, and a default color
         self.color = 'red'  # override color
@@ -37,7 +36,6 @@ class LearningAgent(Agent):
             if entry == None:
                 return 'None'
             return entry
-        
         # Gather inputs
         self.next_waypoint = self.planner.next_waypoint()  # from route planner, also displayed by simulator
         inputs = self.env.sense(self)
@@ -56,18 +54,37 @@ class LearningAgent(Agent):
             if Qlist.get((nunstring(a), inputstring))>bestreward:
                 bestreward = Qlist.get((nunstring(a), inputstring))
                 keptact = a
-        global rememberedstate
-        rememberedstate = (nunstring(keptact), inputstring)
+        #newstate = (nunstring(keptact), inputstring)
         action = keptact
-        print rememberedstate
-
-        # Execute action and get reward        
-        #print ''.join([nunstring(self.next_waypoint),nunstring(inputs.get('light')),nunstring(inputs.get('left')),nunstring(inputs.get('oncoming')),nunstring(inputs.get('right'))])
-        reward = self.env.act(self, action)
-        #print ''.join([nunstring(self.next_waypoint),nunstring(inputs.get('light')),nunstring(inputs.get('left')),nunstring(inputs.get('oncoming')),nunstring(inputs.get('right'))])
         
+        if deadline != 40:
+            rememberedstate = inputstring
+            rememberedaction = nunstring(action)
+        # Execute action and get reward        
+        reward = self.env.act(self, action)
 
         # TODO: Learn policy based on state, action, reward
+        
+        #find next state, action
+        self.next_waypoint = self.planner.next_waypoint()  
+        inputs = self.env.sense(self)
+        inputstring =''.join([nunstring(self.next_waypoint),nunstring(inputs.get('light')),nunstring(inputs.get('left')),nunstring(inputs.get('oncoming')),nunstring(inputs.get('right'))])
+        for a in directions:
+            if Qlist.get((nunstring(a), inputstring))>bestreward:
+                bestreward = Qlist.get((nunstring(a), inputstring))
+                keptact = a
+        #newstate = (nunstring(keptact), inputstring)
+        newaction = keptact
+        newstate = inputstring
+        #Now we have the old action/state pair and the new one.
+        
+        alpha = 0.8
+        #Qlist(rememberedaction,rememberedstate) = Qlist.get((rememberedaction,rememberedstate))+alpha*(reward)+(1-alpha)*Qlist.get((newaction,newstate))
+        print Qlist.get((rememberedaction,rememberedstate)),Qlist.get((newaction,newstate))
+        # TODO: Update state
+        self.state = (self.next_waypoint, inputs)
+
+        #newstate = 
 
         print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
