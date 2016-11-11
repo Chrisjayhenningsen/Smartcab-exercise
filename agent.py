@@ -60,12 +60,7 @@ class LearningAgent(Agent):
         # When learning, check if the state is in the Q-table
         #   If it is not, create a dictionary in the Q-table for the current 'state'
         #   For each action, set the Q-value for the state-action pair to 0        
-        state = (waypoint, inputs)
-        if self.learning == True:
-            if self.Q.get(state)==None:
-                self.Q[state]={'None':0,'left':0,'forward':0,'right':0}
-                for a in valid_actions:
-                    Q[state][a]=0
+        state =(waypoint,str(inputs))
 
         return state
 
@@ -93,6 +88,15 @@ class LearningAgent(Agent):
         # When learning, check if the 'state' is not in the Q-table
         # If it is not, create a new dictionary for that state
         #   Then, for each action available, set the initial Q-value to 0.0
+        #if self.learning == True:
+        
+        
+        
+        if self.Q.get(state)==None:
+            print state
+            print 'found one!'
+            self.Q[state]={'None':0,'left':0,'forward':0,'right':0}
+        print self.Q[state].get('left')
 
         return
 
