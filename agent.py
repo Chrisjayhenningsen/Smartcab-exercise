@@ -19,6 +19,7 @@ class LearningAgent(Agent):
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
 
+
         ###########
         ## TO DO ##
         ###########
@@ -58,9 +59,13 @@ class LearningAgent(Agent):
         # Set 'state' as a tuple of relevant data for the agent
         # When learning, check if the state is in the Q-table
         #   If it is not, create a dictionary in the Q-table for the current 'state'
-        #   For each action, set the Q-value for the state-action pair to 0
-        
-        state = None
+        #   For each action, set the Q-value for the state-action pair to 0        
+        state = (waypoint, inputs)
+        if self.learning == True:
+            if self.Q.get(state)==None:
+                self.Q[state]={'None':0,'left':0,'forward':0,'right':0}
+                for a in valid_actions:
+                    Q[state][a]=0
 
         return state
 
@@ -99,7 +104,8 @@ class LearningAgent(Agent):
         # Set the agent state and default action
         self.state = state
         self.next_waypoint = self.planner.next_waypoint()
-        action = None
+        action = random.choice(self.valid_actions)
+        
 
         ########### 
         ## TO DO ##
@@ -162,7 +168,7 @@ def run():
     ##############
     # Follow the driving agent
     # Flags:
-    #   enforce_deadline - set to True to enforce a deadline metric
+    # enforce_deadline - set to True to enforce a deadline metric
     env.set_primary_agent(agent)
 
     ##############
@@ -170,6 +176,9 @@ def run():
     # Flags:
     #   update_delay - continuous time (in seconds) between actions, default is 2.0 seconds
     #   display      - set to False to disable the GUI if PyGame is enabled
+    #display = False
+    #self.display = False
+    #self.env.display = False
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
     sim = Simulator(env)
