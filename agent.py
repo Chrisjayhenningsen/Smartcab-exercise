@@ -5,8 +5,7 @@ from planner import RoutePlanner
 from simulator import Simulator
 
 class LearningAgent(Agent):
-    """ An agent that learns to drive in the Smartcab world.
-        This is the object you will be modifying. """ 
+    """ An agent that learns to drive in the Smartcab world.This is the object you will be modifying. """ 
 
     def __init__(self, env, learning=False, epsilon=1.0, alpha=0.5):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
@@ -114,7 +113,13 @@ class LearningAgent(Agent):
         # Set the agent state and default action
         self.state = state
         self.next_waypoint = self.planner.next_waypoint()
-        action = random.choice(self.valid_actions)
+	
+	if random.random()<self.epsilon:
+		print 'random act'
+		action = random.choice(self.valid_actions)
+	else:
+		action = self.get_maxQ(state)
+		print 'deliberate act'
         
 
         ########### 
@@ -161,8 +166,7 @@ class LearningAgent(Agent):
         
 
 def run():
-    """ Driving function for running the simulation. 
-        Press ESC to close the simulation, or [SPACE] to pause the simulation. """
+    """ Driving function for running the simulation. Press ESC to close the simulation, or [SPACE] to pause the simulation. """
 
     ##############
     # Create the environment
