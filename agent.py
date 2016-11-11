@@ -83,8 +83,6 @@ class LearningAgent(Agent):
             if self.Q[state].get(a)>bestreward:
                 bestreward = self.Q[state][a]
                 MaxQ = a
-        if MaxQ == 'None':
-            MaxQ = None
 
         return maxQ 
 
@@ -139,6 +137,11 @@ class LearningAgent(Agent):
         ###########
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
+	if action == None:
+	    action = 'None'
+
+	self.Q[state][action]=self.Q[state][action] + reward*self.alpha
+	#print self.Q
 
         return
 
