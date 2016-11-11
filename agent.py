@@ -40,6 +40,9 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
+        #self.no_trials = self.no_trials+1
+        self.epsilon = self.epsilon-0.05
+
 
         return None
 
@@ -90,13 +93,8 @@ class LearningAgent(Agent):
         #   Then, for each action available, set the initial Q-value to 0.0
         #if self.learning == True:
         
-        
-        
         if self.Q.get(state)==None:
-            print state
-            print 'found one!'
             self.Q[state]={'None':0,'left':0,'forward':0,'right':0}
-        print self.Q[state].get('left')
 
         return
 
