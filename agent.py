@@ -53,9 +53,7 @@ class LearningAgent(Agent):
 
         # Collect data about the environment
         waypoint = self.planner.next_waypoint() # The next waypoint 
-        inputs = self.env.sense(self)           # Visual input - intersection light and 
-
-traffic
+        inputs = self.env.sense(self)           # Visual input - intersection light and traffic
         deadline = self.env.get_deadline(self)  # Remaining deadline
 
         ########### 
@@ -78,8 +76,15 @@ traffic
         ## TO DO ##
         ###########
         # Calculate the maximum Q-value of all actions for a given state
-
         maxQ = None
+        bestreward = -100
+        directions = ['None','left','forward','right']
+        for a in directions:
+            if self.Q[state].get(a)>bestreward:
+                bestreward = self.Q[state][a]
+                MaxQ = a
+        if MaxQ == 'None':
+            MaxQ = None
 
         return maxQ 
 
@@ -97,6 +102,9 @@ traffic
         
         if self.Q.get(state)==None:
             self.Q[state]={'None':0,'left':0,'forward':0,'right':0}
+        #    print self.Q[state].get('left')
+         #   self.Q[state]['left']=0
+          #  print self.Q[state].get('left')
 
         return
 
@@ -173,7 +181,12 @@ def run():
     # Follow the driving agent
     # Flags:
     # enforce_deadline - set to True to enforce a deadline metric
-    env.set_primary_agent(agent, enforce_deadline = True)
+    
+    #testing primary agent
+    #env.set_primary_agent(agent, enforce_deadline = True)
+
+    #testing primary agent
+    env.set_primary_agent(agent)
 
     ##############
     # Create the simulation
@@ -185,15 +198,24 @@ def run():
     #self.env.display = False
     #   log_metrics  - set to True to log trial and simulation results to /logs
     #   optimized    - set to True to change the default log file name
-    sim = Simulator(env, display = True, update_delay = 0.01,log_metrics = True)
+    
+    #testing sim
+    #sim = Simulator(env, display = True, update_delay = 0.01,log_metrics = True)
+    #default sim
+    sim = Simulator(env)
+
     
     ##############
     # Run the simulator
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test = 10)
 
+    #testing sim
+    #sim.run(n_test = 10)
+
+    #default sim
+    sim.run()
 
 if __name__ == '__main__':
     run()
