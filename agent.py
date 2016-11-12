@@ -7,7 +7,7 @@ from simulator import Simulator
 class LearningAgent(Agent):
     """ An agent that learns to drive in the Smartcab world.This is the object you will be modifying. """ 
 
-    def __init__(self, env, learning=False, epsilon=1.0, alpha=0.5):
+    def __init__(self, env, learning=False, epsilon=1.0, alpha=0.2):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
         self.planner = RoutePlanner(self.env, self)  # Create a route planner
         self.valid_actions = self.env.valid_actions  # The set of valid actions
@@ -23,6 +23,7 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
+	self.no_trials = 0
 
 
     def reset(self, destination=None, testing=False):
@@ -39,8 +40,9 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
-        #self.no_trials = self.no_trials+1
-        self.epsilon = self.epsilon-0.05
+        self.no_trials = self.no_trials+1
+	
+        self.epsilon = 2.7182818**(self.no_trials*-0.5)
 
 
         return None
@@ -114,12 +116,7 @@ class LearningAgent(Agent):
         self.state = state
         self.next_waypoint = self.planner.next_waypoint()
 	
-	if random.random()<self.epsilon:
-		print 'random act'
-		action = random.choice(self.valid_actions)
-	else:
-		action = self.get_maxQ(state)
-		print 'deliberate act'
+	
         
 
         ########### 
@@ -128,6 +125,15 @@ class LearningAgent(Agent):
         # When not learning, choose a random action
         # When learning, choose a random action with 'epsilon' probability
         #   Otherwise, choose an action with the highest Q-value for the current state
+	if self.learning == True:
+	    if random.random()<self.epsilon:
+	        print 'random act'
+	        action = random.choice(self.valid_actions)
+	    else:
+		action = self.get_maxQ(state)
+		print 'deliberate act'
+	else:
+	    action = random.choice(self.valid_actions)
  
         return action
 
@@ -182,7 +188,10 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent)
+    #testing agent
+    agent = env.create_agent(LearningAgent, learning = True)
+    #default agent	
+    #agent = env.create_agent(LearningAgent)
     
     ##############
     # Follow the driving agent
@@ -190,10 +199,10 @@ def run():
     # enforce_deadline - set to True to enforce a deadline metric
     
     #testing primary agent
-    #env.set_primary_agent(agent, enforce_deadline = True)
+    env.set_primary_agent(agent, enforce_deadline = True)
 
     #testing primary agent
-    env.set_primary_agent(agent)
+    #env.set_primary_agent(agent)
 
     ##############
     # Create the simulation
@@ -207,9 +216,9 @@ def run():
     #   optimized    - set to True to change the default log file name
     
     #testing sim
-    #sim = Simulator(env, display = True, update_delay = 0.01,log_metrics = True)
+    sim = Simulator(env, display = True, update_delay = 0.01,log_metrics = True, optimized = True)
     #default sim
-    sim = Simulator(env)
+    #sim = Simulator(env)
 
     
     ##############
@@ -219,10 +228,10 @@ def run():
     #   n_test     - discrete number of testing trials to perform, default is 0
 
     #testing sim
-    #sim.run(n_test = 10)
+    sim.run(n_test = 10, tolerance = 0.005)
 
     #default sim
-    sim.run()
+    #sim.run()
 
 if __name__ == '__main__':
     run()
