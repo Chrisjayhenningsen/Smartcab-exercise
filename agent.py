@@ -5,7 +5,9 @@ from planner import RoutePlanner
 from simulator import Simulator
 
 class LearningAgent(Agent):
-    """ An agent that learns to drive in the Smartcab world.This is the object you will be modifying. """ 
+    """ An agent that learns to drive in the Smartcab world.This is the object you will be 
+
+modifying. """ 
 
     def __init__(self, env, learning=False, epsilon=1.0, alpha=0.2):
         super(LearningAgent, self).__init__(env)     # Set the agent in the evironment 
@@ -18,12 +20,11 @@ class LearningAgent(Agent):
         self.epsilon = epsilon   # Random exploration factor
         self.alpha = alpha       # Learning factor
 
-
         ###########
         ## TO DO ##
         ###########
         # Set any additional class parameters as needed
-	self.no_trials = 0
+        self.no_trials = 0
 
 
     def reset(self, destination=None, testing=False):
@@ -40,10 +41,12 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
+        if testing:
+            self.epsilon = 0
+            self.alpha = 0
+        else:
+            self.epsilon = 2.7182818**(self.no_trials*-0.5)
         self.no_trials = self.no_trials+1
-	
-        self.epsilon = 2.7182818**(self.no_trials*-0.5)
-
 
         return None
 
@@ -54,7 +57,9 @@ class LearningAgent(Agent):
 
         # Collect data about the environment
         waypoint = self.planner.next_waypoint() # The next waypoint 
-        inputs = self.env.sense(self)           # Visual input - intersection light and traffic
+        inputs = self.env.sense(self)           # Visual input - intersection light and 
+
+traffic
         deadline = self.env.get_deadline(self)  # Remaining deadline
 
         ########### 
@@ -83,7 +88,7 @@ class LearningAgent(Agent):
         for a in directions:
             if self.Q[state].get(a)>bestreward:
                 bestreward = self.Q[state][a]
-                MaxQ = a
+                maxQ = a
 
         return maxQ 
 
@@ -165,6 +170,9 @@ class LearningAgent(Agent):
         state = self.build_state()          # Get current state
         self.createQ(state)                 # Create 'state' in Q-table
         action = self.choose_action(state)  # Choose an action
+        print action
+        if action == 'None':
+            action = None
         reward = self.env.act(self, action) # Receive a reward
         self.learn(state, action, reward)   # Q-learn
 
@@ -172,7 +180,9 @@ class LearningAgent(Agent):
         
 
 def run():
-    """ Driving function for running the simulation. Press ESC to close the simulation, or [SPACE] to pause the simulation. """
+    """ Driving function for running the simulation. Press ESC to close the simulation, or 
+
+[SPACE] to pause the simulation. """
 
     ##############
     # Create the environment
@@ -216,7 +226,9 @@ def run():
     #   optimized    - set to True to change the default log file name
     
     #testing sim
-    sim = Simulator(env, display = True, update_delay = 0.01,log_metrics = True, optimized = True)
+    sim = Simulator(env, display = True, update_delay = 0.01,log_metrics = True, optimized 
+
+= True)
     #default sim
     #sim = Simulator(env)
 
